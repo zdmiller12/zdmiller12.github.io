@@ -1,7 +1,6 @@
 {
-  "name": "orka",
+  "name": "zdmiller12.github.io",
   "version": "0.1.0",
-  "homepage": "https://zdmiller12.github.io",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
