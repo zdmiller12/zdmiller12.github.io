@@ -4,43 +4,26 @@
   "homepage": "https://zdmiller12.github.io",
   "private": true,
   "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -b main -d .next",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@mdx-js/loader": "^3.0.1",
-    "@mdx-js/react": "^3.0.1",
-    "@next/mdx": "^14.2.13",
-    "@tailwindcss/typography": "^0.5.15",
-    "@types/mdx": "^2.0.13",
-    "clsx": "^2.1.1",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.3",
-    "lucide-react": "^0.468.0",
-    "motion": "^11.15.0",
-    "next": "^15.1.7",
-    "next-themes": "^0.4.4",
+    "next": "^15.1.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwind-merge": "^2.5.5"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4.0.0",
-    "@types/node": "^20",
+    "@tailwindcss/postcss": "^4.0.6",
+    "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.1.1",
-    "gh-pages": "^6.3.0",
+    "eslint-config-next": "^15",
     "postcss": "^8",
-    "prettier": "^3.4.2",
-    "prettier-plugin-tailwindcss": "^0.6.10",
-    "tailwindcss": "^4.0.0",
+    "tailwindcss": "^4",
     "typescript": "^5"
   }
 }
