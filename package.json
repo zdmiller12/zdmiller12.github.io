@@ -4,8 +4,6 @@
   "homepage": "https://zdmiller12.github.io",
   "private": true,
   "scripts": {
-    "predeploy": "npm run lint && npm run build",
-    "deploy": "gh-pages -d .next",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
