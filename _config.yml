@@ -20,10 +20,14 @@ author: Zack Miller
 ###############################################
 
 navbar-links:
-  About Me: "aboutme"
-  Links:
+  Professional:
+    - Torc Robotics: "2018-08-13-torc"
+  Projects:
+    - OSM Scene: "2025-02-06-osm-scene"
+  My Links:
     - Github: "https://github.com/zdmiller12"
     - LinkedIn: "https://linkedin.com/in/zdmiller12"
+  About Me: "aboutme"
 
 ################
 # --- Logo --- #
