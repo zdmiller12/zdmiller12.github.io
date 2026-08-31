@@ -28,6 +28,7 @@ navbar-links:
     - Torc Robotics: "2018-08-13-torc"
   Projects:
     - Good Robot: "2025-02-27-good-robot"
+  Compendium: "compendium"
   My Links:
     - Github: "https://github.com/zdmiller12"
     - LinkedIn: "https://linkedin.com/in/zdmiller12"
@@ -290,6 +291,14 @@ defaults:
       social-share: true # add social media sharing buttons to all blog posts
   -
     scope:
+      path: ""
+      type: "compendium"
+    values:
+      layout: "photograph"
+      comments: false
+      social-share: true
+  -
+    scope:
       path: "" # any file that's not a post will be a "page" layout by default
     values:
       layout: "page"
@@ -309,6 +318,13 @@ exclude:
 plugins:
   - jekyll-paginate
   - jekyll-sitemap
+
+# Collections configuration
+collections:
+  compendium:
+    output: true
+    permalink: /compendium/:name/
+    sort_by: date
 
 # Beautiful Jekyll / Dean Attali
 # 2fc73a3a967e97599c9763d05e564189
