@@ -1,10 +1,15 @@
-# Personal Page
+# zdmiller12.github.io
 
-https://zdmiller12.github.io
+This repo used to host my personal site. That content has moved to
+[nauticalhost.xyz](https://nauticalhost.xyz/).
 
-## View Locally
+This repo now just serves a redirect notice plus a playable Pong game
+(beat the bot and you get auto-redirected to the new site).
+
+## View locally
 
 ```sh
-bundle install
-bundle exec jekyll serve
+python3 -m http.server
 ```
+
+Then open http://localhost:8000

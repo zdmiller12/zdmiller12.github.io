@@ -1,5 +1,42 @@
----
-layout: home
-title: My website
-<!-- subtitle: This is where I will tell my friends way too much about me -->
----
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zack Miller</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="assets/pong.css" />
+</head>
+<body>
+  <header class="notice">
+    <p>
+      This site has moved to
+      <a href="https://nauticalhost.xyz/">nauticalhost.xyz</a>.
+    </p>
+    <br>
+    <p class="challenge">
+      Beat the bot to be redirected automatically&hellip; (or lose, and stay here forever)
+    </p>
+  </header>
+
+  <main>
+    <div class="scoreboard">
+      <span id="score-player">0</span>
+      <span class="dash">&ndash;</span>
+      <span id="score-bot">0</span>
+    </div>
+
+    <canvas id="pong" width="800" height="500"></canvas>
+
+    <div id="overlay" class="overlay">
+      <p id="overlay-message"></p>
+      <p class="instructions">
+        Move:  &uarr;/&darr; or W/S<br>
+        Start: SPACE
+      </p>
+    </div>
+  </main>
+
+  <script src="assets/pong.js"></script>
+</body>
+</html>
