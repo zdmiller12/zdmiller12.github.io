@@ -51,12 +51,8 @@ main {
   flex: 0 0 auto;
   font-size: 1.75rem;
   font-weight: 700;
+  font-style: italic;
   letter-spacing: 0.1rem;
-}
-
-.scoreboard .dash {
-  margin: 0 0.75rem;
-  color: #666;
 }
 
 #pong {

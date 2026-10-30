@@ -1,5 +1,4 @@
 (() => {
-  const WIN_SCORE = 1;
   const REDIRECT_URL = "https://nauticalhost.xyz/";
 
   const canvas = document.getElementById("pong");
@@ -8,19 +7,17 @@
   const scoreboard = document.querySelector(".scoreboard");
   const overlay = document.getElementById("overlay");
   const overlayMessage = document.getElementById("overlay-message");
-  const scorePlayerEl = document.getElementById("score-player");
-  const scoreBotEl = document.getElementById("score-bot");
 
   const W = canvas.width;
   const H = canvas.height;
   const PADDLE_W = 12;
   const PADDLE_H = 90;
   const BALL_SIZE = 10;
-  const PADDLE_SPEED = 7;
+  const PADDLE_SPEED = 8;
   const BOT_SPEED = 5.5;
 
   let running = false;
-  let player, bot, ball, scores;
+  let player, bot, ball;
 
   function resetPositions() {
     player = { y: H / 2 - PADDLE_H / 2 };
@@ -28,16 +25,9 @@
     ball = {
       x: W / 2,
       y: H / 2,
-      vx: Math.random() < 0.5 ? 5 : -5,
+      vx: Math.random() < 0.5 ? 6 : -6,
       vy: (Math.random() * 6) - 3,
     };
-  }
-
-  function resetMatch() {
-    scores = { player: 0, bot: 0 };
-    scorePlayerEl.textContent = "0";
-    scoreBotEl.textContent = "0";
-    resetPositions();
   }
 
   const keys = {};
@@ -106,23 +96,9 @@
     }
 
     if (ball.x < 0) {
-      scores.bot += 1;
-      scoreBotEl.textContent = scores.bot;
-      onPoint();
-    } else if (ball.x > W) {
-      scores.player += 1;
-      scorePlayerEl.textContent = scores.player;
-      onPoint();
-    }
-  }
-
-  function onPoint() {
-    if (scores.player >= WIN_SCORE) {
-      endMatch(true);
-    } else if (scores.bot >= WIN_SCORE) {
       endMatch(false);
-    } else {
-      resetPositions();
+    } else if (ball.x > W) {
+      endMatch(true);
     }
   }
 
@@ -166,13 +142,13 @@
   }
 
   function startMatch() {
-    resetMatch();
+    resetPositions();
     overlay.classList.add("hidden");
     running = true;
     requestAnimationFrame(loop);
   }
 
   overlayMessage.textContent = "Beat the bot.";
-  resetMatch();
+  resetPositions();
   draw();
 })();
