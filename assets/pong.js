@@ -7,6 +7,23 @@
   const scoreboard = document.querySelector(".scoreboard");
   const overlay = document.getElementById("overlay");
   const overlayMessage = document.getElementById("overlay-message");
+  const instructions = document.getElementById("instructions");
+  const inputToggle = document.getElementById("input-toggle");
+
+  let isTouch = window.matchMedia("(pointer: coarse)").matches;
+
+  function renderInputMode() {
+    instructions.innerHTML = isTouch
+      ? "Move: &nbsp;drag on the board<br>Start: touch the board"
+      : "Move: &nbsp;&uarr;/&darr;&nbsp; or W/S<br>Start: SPACE";
+    inputToggle.textContent = isTouch ? "Switch to keyboard" : "Switch to touch";
+  }
+  renderInputMode();
+
+  inputToggle.addEventListener("click", () => {
+    isTouch = !isTouch;
+    renderInputMode();
+  });
 
   const W = canvas.width;
   const H = canvas.height;
@@ -40,6 +57,23 @@
   });
   window.addEventListener("keyup", (e) => { keys[e.key] = false; });
 
+  let touchY = null;
+  function handleTouch(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const scaleY = canvas.height / rect.height;
+    touchY = (touch.clientY - rect.top) * scaleY - PADDLE_H / 2;
+  }
+  function handleTouchStart(e) {
+    if (e.target === inputToggle) return;
+    if (!running) startMatch();
+    handleTouch(e);
+  }
+  main.addEventListener("touchstart", handleTouchStart, { passive: false });
+  main.addEventListener("touchmove", handleTouch, { passive: false });
+  main.addEventListener("touchend", () => { touchY = null; });
+
   function resizeCanvas() {
     const gap = parseFloat(getComputedStyle(main).gap) || 0;
     const availW = main.clientWidth;
@@ -52,8 +86,12 @@
   resizeCanvas();
 
   function updatePlayer() {
-    if (keys["ArrowUp"] || keys["w"]) player.y -= PADDLE_SPEED;
-    if (keys["ArrowDown"] || keys["s"]) player.y += PADDLE_SPEED;
+    if (touchY !== null) {
+      player.y = touchY;
+    } else {
+      if (keys["ArrowUp"] || keys["w"]) player.y -= PADDLE_SPEED;
+      if (keys["ArrowDown"] || keys["s"]) player.y += PADDLE_SPEED;
+    }
     player.y = Math.min(Math.max(player.y, 0), H - PADDLE_H);
   }
 

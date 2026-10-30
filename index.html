@@ -21,16 +21,16 @@
   </header>
 
   <main>
-    <div class="scoreboard">Sudden Elimination!</div>
+    <div class="topbar">
+      <button id="input-toggle" class="input-toggle" type="button"></button>
+      <div class="scoreboard">Sudden Elimination!</div>
+    </div>
 
     <canvas id="pong" width="800" height="500"></canvas>
 
     <div id="overlay" class="overlay">
       <p id="overlay-message"></p>
-      <p class="instructions">
-        Move:  &nbsp;&uarr;/&darr;&nbsp; or W/S<br>
-        Start: SPACE
-      </p>
+      <p class="instructions" id="instructions"></p>
     </div>
   </main>
 
