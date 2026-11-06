@@ -162,7 +162,7 @@
       overlayMessage.textContent = "You beat the bot! Redirecting you to nauticalhost.xyz...";
       setTimeout(() => { window.location.href = REDIRECT_URL; }, 2000);
     } else {
-      overlayMessage.textContent = "The bot wins. Press SPACE to try again.";
+      overlayMessage.textContent = "The bot wins.";
     }
   }
 
