@@ -12,32 +12,20 @@
 
   let isTouch = window.matchMedia("(pointer: coarse)").matches;
 
-  // Game-space constants. GAME_W is the axis the ball travels between the
-  // two paddles; GAME_H is the axis the paddles move along. These never
-  // change with screen orientation -- only how they're mapped onto the
-  // canvas (see `vertical` below) does.
   const GAME_W = 800;
   const GAME_H = 500;
   const PADDLE_W = 12;
   const PADDLE_H = 90;
   const BALL_SIZE = 10;
   const PADDLE_SPEED = 8;
+  const BOT_SPEED = 5.5;
 
-  // True when the court is drawn portrait-style: player paddle at the
-  // bottom, bot at the top, both moving left/right. Decided purely by
-  // available space in resizeCanvas(), not by a fixed breakpoint, so it
-  // follows the device whichever way it's held.
-  let vertical = false;
   let dpr = window.devicePixelRatio || 1;
 
   function renderInputMode() {
-    if (isTouch) {
-      instructions.innerHTML = "Move: &nbsp;drag on the board<br>Start: touch the board";
-    } else if (vertical) {
-      instructions.innerHTML = "Move: &nbsp;&larr;/&rarr;&nbsp; or A/D<br>Start: SPACE";
-    } else {
-      instructions.innerHTML = "Move: &nbsp;&uarr;/&darr;&nbsp; or W/S<br>Start: SPACE";
-    }
+    instructions.innerHTML = isTouch
+      ? "Move: &nbsp;drag on the board<br>Start: touch the board"
+      : "Move: &nbsp;&uarr;/&darr;&nbsp; or W/S<br>Start: SPACE";
     inputToggle.textContent = isTouch ? "Switch to keyboard" : "Switch to touch";
   }
 
@@ -47,7 +35,7 @@
   });
 
   let running = false;
-  let player, bot, ball, rallyHits;
+  let player, bot, ball;
 
   function resetPositions() {
     player = { y: GAME_H / 2 - PADDLE_H / 2 };
@@ -58,33 +46,8 @@
       vx: Math.random() < 0.5 ? 6 : -6,
       vy: (Math.random() * 6) - 3,
     };
-    rallyHits = 0; // paddle returns so far this point; drives the ramp below
   }
   resetPositions();
-
-  // ---------------------------------------------------------------------
-  // Bot difficulty. The bot's reaction speed is the only thing standing
-  // between a visitor and the redirect, so it's worth choosing on purpose
-  // rather than inheriting whatever constant felt right for a mouse.
-  //
-  // On a phone, dragging a thumb across the screen is faster and more
-  // precise than tapping arrow keys ever was, so the same BOT_SPEED that
-  // makes the keyboard game fair can make the touch/portrait game close to
-  // automatic. Default policy: touch starts a notch *easier* than keyboard
-  // (so the first return feels winnable even though the drag is precise),
-  // then both ramp up with the rally so a long touch exchange still ends
-  // in a real contest instead of a free point.
-  //
-  // `touch` is true when the player is dragging instead of using keys;
-  // `rallyHits` is how many times either paddle has already returned the
-  // ball this point (0 on serve).
-  // ---------------------------------------------------------------------
-  const RAMP_PER_HIT = 0.5;
-  function botSpeedFor(touch, rallyHits) {
-    const base = touch ? 4.5 : 5.5;
-    const cap = touch ? 7.5 : 6.5;
-    return Math.min(base + rallyHits * RAMP_PER_HIT, cap);
-  }
 
   const keys = {};
   window.addEventListener("keydown", (e) => {
@@ -101,13 +64,8 @@
     e.preventDefault();
     const touch = e.touches[0];
     const rect = canvas.getBoundingClientRect();
-    if (vertical) {
-      const scaleX = GAME_H / rect.width;
-      touchPos = (touch.clientX - rect.left) * scaleX - PADDLE_H / 2;
-    } else {
-      const scaleY = GAME_H / rect.height;
-      touchPos = (touch.clientY - rect.top) * scaleY - PADDLE_H / 2;
-    }
+    const scaleY = GAME_H / rect.height;
+    touchPos = (touch.clientY - rect.top) * scaleY - PADDLE_H / 2;
   }
   function handleTouchStart(e) {
     if (e.target === inputToggle) return;
@@ -122,17 +80,15 @@
     const gap = parseFloat(getComputedStyle(main).gap) || 0;
     const availW = main.clientWidth;
     const availH = main.clientHeight - topbar.getBoundingClientRect().height - gap;
-    vertical = availH > availW;
 
-    const logicalW = vertical ? GAME_H : GAME_W;
-    const logicalH = vertical ? GAME_W : GAME_H;
-    const scale = Math.min(availW / logicalW, availH / logicalH);
-    canvas.style.width = Math.floor(logicalW * scale) + "px";
-    canvas.style.height = Math.floor(logicalH * scale) + "px";
+    const scale = Math.min(availW / GAME_W, availH / GAME_H);
+    canvas.style.width = Math.floor(GAME_W * scale) + "px";
+    canvas.style.height = Math.floor(GAME_H * scale) + "px";
+    topbar.style.width = canvas.style.width;
 
     dpr = window.devicePixelRatio || 1;
-    canvas.width = Math.round(logicalW * dpr);
-    canvas.height = Math.round(logicalH * dpr);
+    canvas.width = Math.round(GAME_W * dpr);
+    canvas.height = Math.round(GAME_H * dpr);
 
     renderInputMode();
     draw(); // changing canvas.width/height clears it, so redraw now
@@ -148,19 +104,16 @@
     if (touchPos !== null) {
       player.y = touchPos;
     } else {
-      const negKey = vertical ? (keys["ArrowLeft"] || keys["a"]) : (keys["ArrowUp"] || keys["w"]);
-      const posKey = vertical ? (keys["ArrowRight"] || keys["d"]) : (keys["ArrowDown"] || keys["s"]);
-      if (negKey) player.y -= PADDLE_SPEED;
-      if (posKey) player.y += PADDLE_SPEED;
+      if (keys["ArrowUp"] || keys["w"]) player.y -= PADDLE_SPEED;
+      if (keys["ArrowDown"] || keys["s"]) player.y += PADDLE_SPEED;
     }
     player.y = Math.min(Math.max(player.y, 0), GAME_H - PADDLE_H);
   }
 
   function updateBot() {
-    const speed = botSpeedFor(isTouch, rallyHits);
     const target = ball.y - PADDLE_H / 2;
-    if (bot.y < target) bot.y += Math.min(speed, target - bot.y);
-    else if (bot.y > target) bot.y -= Math.min(speed, bot.y - target);
+    if (bot.y < target) bot.y += Math.min(BOT_SPEED, target - bot.y);
+    else if (bot.y > target) bot.y -= Math.min(BOT_SPEED, bot.y - target);
     bot.y = Math.min(Math.max(bot.y, 0), GAME_H - PADDLE_H);
   }
 
@@ -182,7 +135,6 @@
       ball.vx *= -1.05;
       ball.vy += (Math.random() * 4) - 2;
       ball.x = PADDLE_W;
-      rallyHits += 1;
     }
 
     if (
@@ -217,14 +169,6 @@
   function draw() {
     ctx.save();
     ctx.scale(dpr, dpr);
-    if (vertical) {
-      // Player paddle (game x=0) ends up at the screen bottom, bot
-      // (game x=GAME_W) at the top; the across-axis (game y) maps
-      // directly to screen x. The drawing code below is untouched --
-      // it always draws in game space.
-      ctx.translate(0, GAME_W);
-      ctx.rotate(-Math.PI / 2);
-    }
 
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, GAME_W, GAME_H);
