@@ -72,6 +72,13 @@ main {
   letter-spacing: 0.1rem;
 }
 
+.game-stage {
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+  min-width: 0;
+}
+
 #pong {
   background: #000;
   border: 2px solid #333;
@@ -171,9 +178,5 @@ main {
 
   .overlay {
     gap: 1.5rem;
-  }
-
-  .instructions {
-    text-align: center;
   }
 }
